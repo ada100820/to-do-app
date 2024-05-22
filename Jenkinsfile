@@ -31,11 +31,17 @@ pipeline {
                script{
                    withDockerRegistry(credentialsId: 'f13e3268-eeb1-4cf8-a6d1-6ccb06a93d43') {
                        sh "docker build -t  todoapp:latest -f backend/Dockerfile . "
-                       sh "docker tag todoapp:latest username/todoapp:latest "
+                       sh "docker tag todoapp:latest ada100820/todoapp:latest "
+                       sh "docker push ada100820/todoapp:latest"
                    }
                }
             }
         }
+        stage('Trivy Docker Scan') {
+            steps {
+                   sh "trivy image ada100820/todoapp:latest "
+               }
+            }
         
     }
 }
