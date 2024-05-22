@@ -42,6 +42,14 @@ pipeline {
                    sh "trivy image ada100820/todoapp:latest "
                }
             }
-        
+        stage('Docker Deploy') {
+            steps {
+               script{
+                   withDockerRegistry(credentialsId: 'f13e3268-eeb1-4cf8-a6d1-6ccb06a93d43') {
+                       sh "docker run -d --name to-do-app -p 4000:4000 username/todoapp:latest "
+                   }
+               }
+            }
+        }
     }
 }
