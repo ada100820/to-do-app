@@ -1,10 +1,10 @@
 # Use the official Node.js image.
 FROM node:14
 
-# Create and set the working directory.
+# Set the working directory.
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json.
 COPY package*.json ./
 
 # Install dependencies.
@@ -14,4 +14,4 @@ RUN npm install
 COPY . .
 
 # Specify the command to run the application.
-CMD ["node", "backend/index.js"]
+CMD ["node", "index.js"]
