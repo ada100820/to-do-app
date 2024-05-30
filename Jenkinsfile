@@ -22,8 +22,9 @@ pipeline {
         
         stage('OWASP Dependency Check') {
             steps {
-                   dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'DP'
-                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'DP', format: 'HTML'
+                // Archive the report for future reference (optional)
+                archiveArtifacts artifacts: 'dependency-check-report.html', fingerprint: true
                }
             }
         stage('Docker Build') {
@@ -37,11 +38,16 @@ pipeline {
                }
             }
         }
-        stage('Trivy Docker Scan') {
+        stage('Trivy Scan') {
             steps {
-                   sh "trivy image ada100820/todoapp:latest "
-               }
+                script {
+                    sh 'trivy image --format html --output trivy-report.html username/todoapp:latest'
+                }
+                // Archive the report (optional)
+                archiveArtifacts artifacts: 'trivy-report.html', fingerprint: true
             }
+        }
+
         stage('Docker Deploy') {
             steps {
                script{
