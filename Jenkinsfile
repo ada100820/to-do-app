@@ -44,8 +44,10 @@ pipeline {
             steps {
                 script {
                     sh 'trivy image --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-report.html username/todoapp:latest'
+                }
             }
         }
+        
 
         stage('Docker Deploy') {
             steps {
