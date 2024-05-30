@@ -43,10 +43,7 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 script {
-                    sh 'trivy image --format html --output trivy-report.html username/todoapp:latest'
-                }
-                // Archive the report (optional)
-                archiveArtifacts artifacts: 'trivy-report.html', fingerprint: true
+                    sh 'trivy image --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-report.html username/todoapp:latest'
             }
         }
 
