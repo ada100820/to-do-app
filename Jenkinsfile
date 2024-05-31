@@ -23,11 +23,11 @@ pipeline {
     stage('OWASP Dependency Check') {
         steps {
             dependencyCheck additionalArguments: '--scan ./ --output=dependency-check-report.xml', odcInstallation: 'DP'
-              // Process XML using XSLT (optional)
+            // Process XML using XSLT (optional)
             sh 'xsltproc your-stylesheet.xsl dependency-check-report.xml > dependency-check-report.html' // Assuming you have a stylesheet
+            // Archive both reports (if XSLT is used)
+            archiveArtifacts artifacts: 'dependency-check-report.xml,dependency-check-report.html', fingerprint: true
         }
-        // Archive both reports (if XSLT is used)
-        archiveArtifacts artifacts: 'dependency-check-report.xml,dependency-check-report.html', fingerprint: true
     }
 
     stage('Docker Build') {
