@@ -21,14 +21,26 @@ pipeline {
     }
 
     stage('OWASP Dependency Check') {
-        steps {
-            dependencyCheck additionalArguments: '--scan ./ --output=dependency-check-report.xml', odcInstallation: 'DP'
-            // Process XML using XSLT (optional)
-            sh 'xsltproc your-stylesheet.xsl dependency-check-report.xml > dependency-check-report.html' // Assuming you have a stylesheet
-            // Archive both reports (if XSLT is used)
-            archiveArtifacts artifacts: 'dependency-check-report.xml,dependency-check-report.html', fingerprint: true
-        }
+      steps {
+        dependencyCheck additionalArguments: '--scan ./ -f xml', odcInstallation: 'DP'
+        // Archive the report for future reference
+        archiveArtifacts artifacts: 'dependency-check-report.xml', fingerprint: true
+      }
     }
+
+    // This stage is optional and requires xsltproc to be installed on Jenkins
+
+stage('XSLT Transformation (Optional)') {
+  when {
+    expression {
+      return 'true' // Change to a condition if transformation is only needed sometimes
+    }
+  }
+  steps {
+    sh 'xsltproc your-stylesheet.xsl dependency-check-report.xml > dependency-check-report.html'
+  }
+}
+
 
     stage('Docker Build') {
       steps {
